@@ -109,7 +109,7 @@ class Orders extends Component {
             <Row style={{marginTop: '10px'}}>
               <Col>
                 <h5>Список заказов</h5>
-                <Table hover striped>
+                <Table hover striped responsive>
                   <thead>
                     <tr>
                       {

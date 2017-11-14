@@ -20,7 +20,7 @@ class Orders extends Component {
       orderAsc: false,
     };
     this.onChangePage = this.onChangePage.bind(this);
-    this.LoadDataFromJson = this.LoadDataFromJson.bind(this);
+    this.loadDataFromJson = this.loadDataFromJson.bind(this);
   }
 
   componentDidMount() {
@@ -68,14 +68,15 @@ class Orders extends Component {
       this.setState({pageOfItems: pageOfItems});
   }
 
-  LoadDataFromJson() {
+  loadDataFromJson() {
     let _this = this;
     // ordersRef.set([]);
     axios
-      .get('https://codepen.io/jobs.json')
+      // .get('https://codepen.io/jobs.json')
+      .get('https://github.com/neonwrx/orders-test-app/blob/master/src/alerts.json')
       .then(function(result) {
         _this.setState({
-          jobs: result.data.jobs
+          jobs: result.data
         });
         console.log(result.data);
       })
@@ -124,7 +125,7 @@ class Orders extends Component {
                 <Button
                   color="primary"
                   outline
-                  onClick={this.LoadDataFromJson}
+                  onClick={this.loadDataFromJson}
                 >
                   Загрузить данные
                 </Button>

@@ -3,11 +3,12 @@ import { connect } from 'react-redux';
 import { ordersRef } from '../firebase';
 import { setOrders } from '../actions';
 import { Table, Container, Row, Col, Button } from 'reactstrap';
-import axios from 'axios';
 
 import Header from './Header';
 import Order from './Order';
 import Pagination from './Pagination';
+import data from '../data.json';
+import moment from 'moment';
 
 class Orders extends Component {
   constructor(props) {
@@ -24,22 +25,40 @@ class Orders extends Component {
   }
 
   componentDidMount() {
+    let orders = [];
     ordersRef.on('value', snap => {
-      let orders = [];
+      orders = [];
       snap.forEach(order => {
         const { email, userName, name, surName, phone, position, orderType, provider, id, date, endDate, month, comments, status } = order.val();
         const serverKey = order.key;
         orders.push({ email, userName, name, surName, phone, position, orderType, provider, id, date, endDate, month, comments, serverKey, status });
       });
       this.props.setOrders(orders);
-      this.setState({ordersList: orders, isLoad: true});
     });
+    this.setState({ordersList: orders, isLoad: true});
+  }
+
+  componentWillReceiveProps(nextProps) {
+    let orders = [];
+    ordersRef.on('value', snap => {
+      orders = [];
+      snap.forEach(order => {
+        const { email, userName, name, surName, phone, position, orderType, provider, id, date, endDate, month, comments, status } = order.val();
+        const serverKey = order.key;
+        orders.push({ email, userName, name, surName, phone, position, orderType, provider, id, date, endDate, month, comments, serverKey, status });
+      });
+    });
+    this.setState({ordersList: orders});
   }
 
   sort(a, b) {
     const index = this.state.orderBy;
+    const aDateFormatted = moment(a.date, 'DD.MM.YYYY').format('YYYYMMDD');
+    const bDateFormatted = moment(b.date, 'DD.MM.YYYY').format('YYYYMMDD');
+    const aEndDateFormatted = moment(a.endDate, 'DD.MM.YYYY').format('YYYYMMDD');
+    const bEndDateFormatted = moment(b.endDate, 'DD.MM.YYYY').format('YYYYMMDD');
     if (index === 0) {
-      return (this.state.orderAsc ? a.date.localeCompare(b.date) : b.date.localeCompare(a.date));
+      return (this.state.orderAsc ? aDateFormatted.localeCompare(bDateFormatted) : bDateFormatted.localeCompare(aDateFormatted));
     } else if (index === 1) {
       return (this.state.orderAsc ? a.userName.localeCompare(b.userName) : b.userName.localeCompare(a.userName));
     } else if (index === 2) {
@@ -51,7 +70,7 @@ class Orders extends Component {
     } else if (index === 5) {
       return (this.state.orderAsc ? a.provider.localeCompare(b.provider) : b.provider.localeCompare(a.provider));
     } else if (index === 6) {
-      return (this.state.orderAsc ? a.endDate.localeCompare(b.endDate) : b.endDate.localeCompare(a.endDate));
+      return (this.state.orderAsc ? aEndDateFormatted.localeCompare(bEndDateFormatted) : bEndDateFormatted.localeCompare(aEndDateFormatted));
     } else if (index === 7) {
       return (this.state.orderAsc ? a.status.localeCompare(b.status) : b.status.localeCompare(a.status));
     } else return a = b;
@@ -69,17 +88,13 @@ class Orders extends Component {
   }
 
   loadDataFromJson() {
-    let _this = this;
-    // ordersRef.set([]);
-    axios
-      // .get('https://codepen.io/jobs.json')
-      .get('https://github.com/neonwrx/orders-test-app/blob/master/src/alerts.json')
-      .then(function(result) {
-        _this.setState({
-          jobs: result.data
-        });
-        console.log(result.data);
-      })
+    ordersRef.set([]);
+    Object.keys(data.orders).map((order) => {
+      const { email, userName, name, surName, phone, position, orderType, provider, id, date, endDate, month, comments, status } = data.orders[order];
+      // console.log(date);
+      ordersRef.push({email, userName, name, surName, phone, position, orderType, provider, id, date, endDate, month, comments, status});
+      return ordersRef;
+    });
   }
 
   render () {

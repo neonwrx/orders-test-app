@@ -17,7 +17,7 @@ class NewOrder extends Component {
       name: '',
       surName: '',
       phone: '',
-      position: '',
+      position: {input0: ''},
       orderType: 'Розница',
       provider: 'Поставщик 1',
       id: '',
@@ -49,12 +49,12 @@ class NewOrder extends Component {
         orders.push({ email, userName, name, surName, phone, position, orderType, provider, id, date, endDate, month, comments, serverKey });
       });
       this.props.setOrders(orders);
-      this.setState({isLoad: true});
     });
+    this.setState({isLoad: true});
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps);
+    // console.log(nextProps);
     if (nextProps.orders.length) {
       const date = moment().format('DD.MM.YYYY');
       const lastMonth = moment(nextProps.orders[nextProps.orders.length-1].date, 'DD.MM.YYYY').format('MM');
@@ -65,6 +65,11 @@ class NewOrder extends Component {
       } else {
         id = moment().format('YYMMDD') + '1';
       }
+      this.setState({date, id});
+    } else {
+      const date = moment().format('DD.MM.YYYY');
+      let id = '';
+      id = moment().format('YYMMDD') + '1';
       this.setState({date, id});
     }
   }
@@ -130,7 +135,6 @@ class NewOrder extends Component {
     e.preventDefault();
     const { email, name, surName, phone, position, orderType, provider, date, endDate, comments, status } = this.state;
     const { userName } = this.props.user;
-    // this.state.orderType === 'Розница' ? 'р-' + this.state.id : 'о-' + this.state.id;s
     let newId = this.state.orderType === 'Розница' ? 'р-' + this.state.id : 'о-' + this.state.id;
     const formattedEndDate = moment(endDate, 'YYYY-MM-DD').format('DD.MM.YYYY');
     const month = moment(date, 'YYYY-MM-DD').format('MM');

@@ -29,7 +29,6 @@ class Order extends Component {
 
   componentDidMount() {
     const { email, userName, name, surName, phone, position, orderType, provider, id, comments, endDate, status, serverKey } = this.props.order;
-    // if (moment(endDate, 'DD.MM.YYYY').format('DD.MM.YYYY') === moment().format('DD.MM.YYYY')) {
     this.setState({ email, userName, name, surName, phone, position, orderType, provider, id: id.slice(2), comments, status });
     const trueDates = moment(endDate, 'DD.MM.YYYY').format('YYYY-MM-DD');
     const nowDate = moment().format('YYYY-MM-DD');

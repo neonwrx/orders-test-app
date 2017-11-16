@@ -44,6 +44,9 @@ body {
   margin-left: -16px;
   content: "\25BC";
 }
+th:last-child:before {
+  display: none;
+}
 .spinner {
   position: absolute;
   top: 50%;

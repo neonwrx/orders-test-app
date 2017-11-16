@@ -73,7 +73,7 @@ class Orders extends Component {
       return (this.state.orderAsc ? aEndDateFormatted.localeCompare(bEndDateFormatted) : bEndDateFormatted.localeCompare(aEndDateFormatted));
     } else if (index === 7) {
       return (this.state.orderAsc ? a.status.localeCompare(b.status) : b.status.localeCompare(a.status));
-    } else return a = b;
+    } else return false;
   }
 
   handleClick(index) {

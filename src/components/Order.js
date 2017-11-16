@@ -42,6 +42,22 @@ class Order extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { email, userName, name, surName, phone, position, orderType, provider, id, comments, endDate, status, serverKey } = nextProps.order;
+    this.setState({ email, userName, name, surName, phone, position, orderType, provider, id: id.slice(2), comments, status });
+    const trueDates = moment(endDate, 'DD.MM.YYYY').format('YYYY-MM-DD');
+    const nowDate = moment().format('YYYY-MM-DD');
+    const diffDate = moment().subtract(3, 'days').format('YYYY-MM-DD');
+    this.setState({showEditBtn: false});
+    if (moment(trueDates).isSameOrAfter(diffDate)) {
+      this.setState({showEditBtn: true});
+    }
+    if (status === 'Confirm' && moment(nowDate).isAfter(trueDates)) {
+      ordersRef.child(serverKey).update({status: 'Expired'});
+      // console.log('Expired', this.props.order.name);
+    }
+  }
+
   toggle() {
     this.setState({
       modal: !this.state.modal
